@@ -1,7 +1,7 @@
 #pragma once
 
 #include "as-camera.hpp"
-#include "bitfield-enum-class/bitfield-enum-class.hpp"
+#include "bec/bitfield-enum-class.hpp"
 
 namespace asc
 {
