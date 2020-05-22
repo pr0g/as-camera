@@ -8,6 +8,7 @@ namespace asc
 
 enum class MotionType
 {
+    // clang-format off
     None     = 0,
     Forward  = 1 << 0,
     Backward = 1 << 1,
@@ -15,6 +16,7 @@ enum class MotionType
     Right    = 1 << 3,
     Up       = 1 << 4,
     Down     = 1 << 5
+    // clang-format on
 };
 
 } // namespace asc
@@ -36,9 +38,9 @@ enum class Handedness
 
 struct CameraControl
 {
-    float delta_pitch;
-    float delta_yaw;
-    float delta_dolly;
+    float pitch;
+    float yaw;
+    float dolly;
     MotionType motion;
 };
 
@@ -46,6 +48,7 @@ struct CameraProperties
 {
     float translate_speed;
     float rotate_speed;
+    float look_smoothness;
 };
 
 inline void update_camera(
@@ -95,9 +98,12 @@ inline void update_camera(
             -= as::mat3::col1(orientation) * props.translate_speed * dt;
     }
 
-    camera.pitch += control.delta_pitch * props.rotate_speed;
-    camera.yaw += control.delta_yaw * props.rotate_speed;
-    camera.focal_dist += control.delta_dolly * props.translate_speed;
+    // https://www.gamasutra.com/blogs/ScottLembcke/20180404/316046/Improved_Lerp_Smoothing.php
+    const float rate = exp2(props.look_smoothness);
+    const float t = exp2(-rate * dt);
+    camera.pitch = as::lerp(t, control.pitch, camera.pitch);
+    camera.yaw = as::lerp(t, control.yaw, camera.yaw);
+    camera.focal_dist = as::lerp(t, control.dolly, camera.focal_dist);
 }
 
 } // namespace asc
