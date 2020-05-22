@@ -7,35 +7,19 @@ FetchContent_Declare(
     as GIT_REPOSITORY https://github.com/pr0g/as.git)
 FetchContent_Declare(
     bec GIT_REPOSITORY https://github.com/pr0g/Bit-Field-Enum-Class.git)
-
 FetchContent_MakeAvailable(as bec)
 
 add_library(${PROJECT_NAME} INTERFACE)
 
 include(GNUInstallDirs)
+include(simple-install.cmake)
 
 target_include_directories(
     ${PROJECT_NAME} INTERFACE
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-)
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>)
 
 target_link_libraries(
-    ${PROJECT_NAME} INTERFACE as bec
-)
+    ${PROJECT_NAME} INTERFACE as bec)
 
-install(
-    TARGETS ${PROJECT_NAME}
-    EXPORT ${PROJECT_NAME}-config
-)
-
-install(
-    EXPORT ${PROJECT_NAME}-config
-    NAMESPACE ${PROJECT_NAME}::
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}
-)
-
-install(
-    DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/include/${PROJECT_NAME}/
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}
-)
+install_header_only(${PROJECT_NAME})
