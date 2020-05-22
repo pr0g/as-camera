@@ -29,5 +29,4 @@ IncludeBlocks: Preserve
 FixNamespaceComments: true
 AlignOperands: AlignAfterOperator
 BreakBeforeBinaryOperators: All
-AlignConsecutiveAssignments: true
 ...
