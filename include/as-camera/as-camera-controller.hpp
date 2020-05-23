@@ -79,23 +79,23 @@ inline void update_camera(
     }
 
     if ((control.motion & MotionType::Left) == MotionType::Left) {
-        camera.look_at
-            -= as::mat3::col0(orientation) * props.translate_speed * dt;
+        camera.look_at -=
+            as::mat3::col0(orientation) * props.translate_speed * dt;
     }
 
     if ((control.motion & MotionType::Right) == MotionType::Right) {
-        camera.look_at
-            += as::mat3::col0(orientation) * props.translate_speed * dt;
+        camera.look_at +=
+            as::mat3::col0(orientation) * props.translate_speed * dt;
     }
 
     if ((control.motion & MotionType::Up) == MotionType::Up) {
-        camera.look_at
-            += as::mat3::col1(orientation) * props.translate_speed * dt;
+        camera.look_at +=
+            as::mat3::col1(orientation) * props.translate_speed * dt;
     }
 
     if ((control.motion & MotionType::Down) == MotionType::Down) {
-        camera.look_at
-            -= as::mat3::col1(orientation) * props.translate_speed * dt;
+        camera.look_at -=
+            as::mat3::col1(orientation) * props.translate_speed * dt;
     }
 
     // https://www.gamasutra.com/blogs/ScottLembcke/20180404/316046/Improved_Lerp_Smoothing.php
