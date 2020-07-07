@@ -4,7 +4,9 @@ project(as-camera LANGUAGES CXX)
 include(FetchContent)
 
 FetchContent_Declare(
-    as GIT_REPOSITORY https://github.com/pr0g/as.git)
+    as
+    GIT_REPOSITORY https://github.com/pr0g/as.git
+    GIT_TAG        origin/main)
 FetchContent_Declare(
     bec GIT_REPOSITORY https://github.com/pr0g/Bit-Field-Enum-Class.git)
 FetchContent_MakeAvailable(as bec)
