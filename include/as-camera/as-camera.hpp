@@ -7,27 +7,29 @@ namespace asc
 
 struct Camera
 {
-    as::vec3_t look_at{0.0f}; // position of camera when zero focal_dist
-                              // position of look_at whe non-zero focal_dist
+    as::point3_t look_at{0.0f}; // position of camera when zero focal_dist
+                                // position of look_at when non-zero focal_dist
     float yaw{0.0f};
     float pitch{0.0f};
     float focal_dist{0.0f}; // zero gives fps free look,
                             // otherwise orbit about look_at
 
-    as::mat4_t view() const;      // camera view to pass to shader
-    as::mat4_t transform() const; // camera transform to use in app
+    as::affine_t view() const;      // camera view to pass to shader
+    as::affine_t transform() const; // camera transform to use in app
 };
 
-inline as::mat4_t Camera::view() const
+inline as::affine_t Camera::view() const
 {
-    return as::mat::inverse(transform());
+    return as::affine::inverse(transform());
 }
 
-inline as::mat4_t Camera::transform() const
+inline as::affine_t Camera::transform() const
 {
-    return as::mat4::from_vec3(look_at)
-         * as::mat4::from_mat3(as::mat3::rotation_zxy(pitch, yaw, 0.0f))
-         * as::mat4::from_vec3(as::vec3_t::axis_z(focal_dist));
+    return as::affine::mul(
+        as::affine::mul(
+            as::affine::from_point3(as::point3_t::axis_z(focal_dist)),
+            as::affine::from_mat3(as::mat3::rotation_zxy(pitch, yaw, 0.0f))),
+        as::affine::from_point3(look_at));
 }
 
 } // namespace asc

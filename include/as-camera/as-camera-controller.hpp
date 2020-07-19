@@ -55,7 +55,7 @@ inline void update_camera(
     Camera& camera, const CameraControl& control, const CameraProperties& props,
     const float dt, const Handedness handedness)
 {
-    const as::mat3_t orientation = as::mat3::from_mat4(camera.transform());
+    const as::mat3_t orientation = camera.transform().rotation;
 
     using bec::operator&;
 
@@ -71,31 +71,31 @@ inline void update_camera(
     };
 
     if ((control.motion & MotionType::Forward) == MotionType::Forward) {
-        camera.look_at += as::mat3::col2(orientation) * movement(handedness);
+        camera.look_at += as::mat3::basis_z(orientation) * movement(handedness);
     }
 
     if ((control.motion & MotionType::Backward) == MotionType::Backward) {
-        camera.look_at -= as::mat3::col2(orientation) * movement(handedness);
+        camera.look_at -= as::mat3::basis_z(orientation) * movement(handedness);
     }
 
     if ((control.motion & MotionType::Left) == MotionType::Left) {
         camera.look_at -=
-            as::mat3::col0(orientation) * props.translate_speed * dt;
+            as::mat3::basis_x(orientation) * props.translate_speed * dt;
     }
 
     if ((control.motion & MotionType::Right) == MotionType::Right) {
         camera.look_at +=
-            as::mat3::col0(orientation) * props.translate_speed * dt;
+            as::mat3::basis_x(orientation) * props.translate_speed * dt;
     }
 
     if ((control.motion & MotionType::Up) == MotionType::Up) {
         camera.look_at +=
-            as::mat3::col1(orientation) * props.translate_speed * dt;
+            as::mat3::basis_y(orientation) * props.translate_speed * dt;
     }
 
     if ((control.motion & MotionType::Down) == MotionType::Down) {
         camera.look_at -=
-            as::mat3::col1(orientation) * props.translate_speed * dt;
+            as::mat3::basis_y(orientation) * props.translate_speed * dt;
     }
 
     // https://www.gamasutra.com/blogs/ScottLembcke/20180404/316046/Improved_Lerp_Smoothing.php
