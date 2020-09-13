@@ -8,7 +8,10 @@ FetchContent_Declare(
     GIT_REPOSITORY https://github.com/pr0g/as.git
     GIT_TAG        origin/main)
 FetchContent_Declare(
-    bec GIT_REPOSITORY https://github.com/pr0g/Bit-Field-Enum-Class.git)
+    bec
+    GIT_REPOSITORY https://github.com/pr0g/Bit-Field-Enum-Class.git
+    GIT_TAG        origin/main)
+
 FetchContent_MakeAvailable(as bec)
 
 add_library(${PROJECT_NAME} INTERFACE)
