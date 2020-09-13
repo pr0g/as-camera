@@ -24,7 +24,7 @@ enum class MotionType
 template<>
 struct bec::EnableBitMaskOperators<asc::MotionType>
 {
-    static const bool enable = true;
+    static const bool Enable = true;
 };
 
 namespace asc
