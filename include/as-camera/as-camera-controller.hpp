@@ -51,7 +51,7 @@ struct CameraProperties
     float look_smoothness;
 };
 
-inline void update_camera(
+inline void updateCamera(
     Camera& camera, const CameraControl& control, const CameraProperties& props,
     const float dt, const Handedness handedness)
 {
