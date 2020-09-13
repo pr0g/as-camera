@@ -27,8 +27,8 @@ inline as::affine_t Camera::transform() const
 {
     return as::affine::mul(
         as::affine::mul(
-            as::affine::from_point3(as::point3_t::axis_z(focal_dist)),
-            as::affine::from_mat3(as::mat3::rotation_zxy(pitch, yaw, 0.0f))),
+            as::affine_t(as::vec3_t::axis_z(focal_dist)),
+            as::affine_t(as::mat3::rotation_zxy(pitch, yaw, 0.0f))),
         as::affine::from_point3(look_at));
 }
 
