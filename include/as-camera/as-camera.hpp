@@ -20,16 +20,16 @@ struct Camera
 
 inline as::affine_t Camera::view() const
 {
-    return as::affine::inverse(transform());
+    return as::affine_inverse(transform());
 }
 
 inline as::affine_t Camera::transform() const
 {
-    return as::affine::mul(
-        as::affine::mul(
+    return as::affine_mul(
+        as::affine_mul(
             as::affine_t(as::vec3_t::axis_z(focal_dist)),
-            as::affine_t(as::mat3::rotation_zxy(pitch, yaw, 0.0f))),
-        as::affine::from_point3(look_at));
+            as::affine_t(as::mat3_rotation_zxy(pitch, yaw, 0.0f))),
+        as::affine_from_point3(look_at));
 }
 
 } // namespace asc
