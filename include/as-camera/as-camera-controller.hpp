@@ -55,7 +55,7 @@ inline void updateCamera(
   Camera& camera, const CameraControl& control, const CameraProperties& props,
   const float dt, const Handedness handedness)
 {
-  const as::mat3_t orientation = camera.transform().rotation;
+  const as::mat3 orientation = camera.transform().rotation;
 
   using bec::operator&;
 
