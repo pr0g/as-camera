@@ -101,9 +101,9 @@ inline void updateCamera(
   // https://www.gamasutra.com/blogs/ScottLembcke/20180404/316046/Improved_Lerp_Smoothing.php
   const float rate = exp2(props.look_smoothness);
   const float t = exp2(-rate * dt);
-  camera.pitch = as::lerp(t, control.pitch, camera.pitch);
-  camera.yaw = as::lerp(t, control.yaw, camera.yaw);
-  camera.focal_dist = as::lerp(t, control.dolly, camera.focal_dist);
+  camera.pitch = as::mix(control.pitch, camera.pitch, t);
+  camera.yaw = as::mix(control.yaw, camera.yaw, t);
+  camera.focal_dist = as::mix(control.dolly, camera.focal_dist, t);
 }
 
 } // namespace asc
