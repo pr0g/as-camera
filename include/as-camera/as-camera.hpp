@@ -7,8 +7,9 @@ namespace asc
 
 struct Camera
 {
-  as::point3 look_at{0.0f}; // position of camera when zero focal_dist
-                            // position of look_at when non-zero focal_dist
+  as::vec3 look_at{0.0f}; // position of camera when focal_dist is zero,
+                          // or position of look_at when focal_dist is greater
+                          // than zero
   float yaw{0.0f};
   float pitch{0.0f};
   float focal_dist{0.0f}; // zero gives fps free look,
@@ -29,7 +30,7 @@ inline as::affine Camera::transform() const
     as::affine_mul(
       as::affine(as::vec3::axis_z(focal_dist)),
       as::affine(as::mat3_rotation_zxy(pitch, yaw, 0.0f))),
-    as::affine_from_point3(look_at));
+    as::affine(look_at));
 }
 
 } // namespace asc
