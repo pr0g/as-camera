@@ -19,6 +19,8 @@ enum class MotionType
   ScrollIn    = 1 << 6,
   ScrollOut   = 1 << 7,
   ScrollReset = 1 << 8,
+  PushOut     = 1 << 9,
+  PullIn      = 1 << 10,
   // clang-format on
 };
 
@@ -75,7 +77,7 @@ inline void updateCamera(
   };
 
   const auto flatten = [&camera](const auto& vector) {
-    return std::abs(camera.focal_dist) > 0.0f
+    return !as::almost_equal(camera.focal_dist, 0.0f, 0.01f)
         ? as::vec_normalize(as::vec3(vector.x, 0.0f, vector.z))
         : vector;
   };
@@ -85,6 +87,21 @@ inline void updateCamera(
 
   const auto forward = flatten(basis_z);
   const auto right = flatten(basis_x);
+
+  if ((control.motion & MotionType::PushOut) == MotionType::PushOut) {
+      control.dolly -= props.translate_speed * dt;
+      control.look_at = camera.transform().translation - basis_z * control.dolly;
+  }
+
+  if ((control.motion & MotionType::PullIn) == MotionType::PullIn) {
+      control.dolly = as::min(control.dolly + props.translate_speed * dt, 0.0f);
+      control.look_at = camera.transform().translation - basis_z * control.dolly;
+  }
+
+  if ((control.motion & MotionType::ScrollReset) == MotionType::ScrollReset) {
+    control.look_at = camera.transform().translation;
+    control.dolly = 0.0f;
+  }
 
   if ((control.motion & MotionType::Forward) == MotionType::Forward) {
     control.look_at += forward * movement(handedness);
@@ -116,11 +133,6 @@ inline void updateCamera(
 
   if ((control.motion & MotionType::ScrollOut) == MotionType::ScrollOut) {
     control.dolly -= props.translate_speed * dt;
-  }
-
-  if ((control.motion & MotionType::ScrollReset) == MotionType::ScrollReset) {
-    control.look_at = camera.transform().translation;
-    control.dolly = 0.0f;
   }
 
   // https://www.gamasutra.com/blogs/ScottLembcke/20180404/316046/Improved_Lerp_Smoothing.php
