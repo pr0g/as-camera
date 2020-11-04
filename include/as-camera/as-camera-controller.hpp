@@ -54,6 +54,7 @@ struct CameraProperties
 {
   float translate_speed;
   float rotate_speed;
+  float orbit_speed;
   float look_smoothness;
 };
 
@@ -120,11 +121,19 @@ inline void updateCamera(
   }
 
   if ((control.motion & MotionType::Up) == MotionType::Up) {
-    control.look_at += as::vec3::axis_y() * props.translate_speed * dt;
+    if (control.dolly == 0.0f || props.orbit_speed == 0.0f) {
+      control.look_at += as::vec3::axis_y() * props.translate_speed * dt;
+    } else {
+      control.pitch += props.orbit_speed * dt;
+    }
   }
 
   if ((control.motion & MotionType::Down) == MotionType::Down) {
-    control.look_at -= as::vec3::axis_y() * props.translate_speed * dt;
+    if (control.dolly == 0.0f || props.orbit_speed == 0.0f) { 
+      control.look_at -= as::vec3::axis_y() * props.translate_speed * dt;
+    } else {
+      control.pitch -= props.orbit_speed * dt;
+    }
   }
 
   if ((control.motion & MotionType::ScrollIn) == MotionType::ScrollIn) {
