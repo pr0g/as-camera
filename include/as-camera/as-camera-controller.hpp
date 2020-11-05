@@ -144,6 +144,23 @@ inline void updateCamera(
     control.dolly -= props.translate_speed * dt;
   }
 
+  auto clamp_rotation = [](const float angle) {
+    return std::fmod(angle + as::k_tau, as::k_tau);
+  };
+
+  // keep yaw in 0 - 360 range
+  control.yaw = clamp_rotation(control.yaw);
+  camera.yaw = clamp_rotation(camera.yaw);
+
+  // ensure smooth transition when moving across 0 - 360 boundary
+  const float yaw_delta = control.yaw - camera.yaw;
+  if (std::abs(yaw_delta) >= as::k_pi) {
+    control.yaw -= as::k_tau * as::sign(yaw_delta);
+  }
+
+  // clamp pitch to be +-90 degrees
+  control.pitch = as::clamp(control.pitch, -as::k_pi * 0.5f, as::k_pi * 0.5f);
+
   // https://www.gamasutra.com/blogs/ScottLembcke/20180404/316046/Improved_Lerp_Smoothing.php
   const float rate = exp2(props.look_smoothness);
   const float t = exp2(-rate * dt);
