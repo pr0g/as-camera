@@ -41,6 +41,13 @@ enum class Handedness
   Right
 };
 
+enum class Mode
+{
+  None,
+  Orbit,
+  Look
+};
+
 struct CameraControl
 {
   as::vec3 look_at;
@@ -50,6 +57,7 @@ struct CameraControl
   float yaw;
   float dolly;
   MotionType motion;
+  Mode mode;
 };
 
 struct CameraProperties
@@ -106,7 +114,9 @@ inline void updateCamera(
   control.look_at += delta_pan_x * (props.pan_invert_x ? -1.0f : 1.0f);
   control.look_at += delta_pan_y * (props.pan_invert_y ? 1.0f : -1.0f);
 
-  control.dolly += float(control.wheel_delta) * props.dolly_speed;
+  if (control.mode == Mode::Orbit) {
+    control.dolly = as::min(control.dolly + float(control.wheel_delta) * props.dolly_speed, 0.0f);
+  }
 
   if ((control.motion & MotionType::PushOut) == MotionType::PushOut) {
       control.dolly -= props.translate_speed * dt;
