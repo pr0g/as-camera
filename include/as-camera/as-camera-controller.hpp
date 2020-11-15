@@ -52,6 +52,7 @@ struct CameraControl
 {
   as::vec3 look_at;
   as::vec2i pan_delta;
+  as::vec2i dolly_delta;
   int32_t wheel_delta;
   float pitch;
   float yaw;
@@ -116,6 +117,7 @@ inline void updateCamera(
 
   if (control.mode == Mode::Orbit) {
     control.dolly = as::min(control.dolly + float(control.wheel_delta) * props.dolly_speed, 0.0f);
+    control.dolly = as::min(control.dolly + float(control.dolly_delta.y) * props.pan_speed, 0.0f);
   }
 
   if ((control.motion & MotionType::PushOut) == MotionType::PushOut) {
