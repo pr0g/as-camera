@@ -87,9 +87,8 @@ inline void updateCamera(
   const bool orbit = !as::almost_equal(camera.focal_dist, 0.0f, 0.01f);
 
   const auto flatten = [&camera, orbit](const auto& vector) {
-    return orbit
-        ? as::vec_normalize(as::vec3(vector.x, 0.0f, vector.z))
-        : vector;
+    return orbit ? as::vec_normalize(as::vec3(vector.x, 0.0f, vector.z))
+                 : vector;
   };
 
   const auto basis_x = as::mat3_basis_x(orientation);
@@ -98,9 +97,12 @@ inline void updateCamera(
 
   const auto forward = flatten(basis_z);
 
-  const auto pan_y = orbit ? forward : props.pan_local ? basis_y : as::vec3::axis_y();
+  const auto pan_y = orbit           ? forward
+                   : props.pan_local ? basis_y
+                                     : as::vec3::axis_y();
 
-  const auto delta_pan_x = float(control.pan_delta.x) * basis_x * props.pan_speed;
+  const auto delta_pan_x =
+    float(control.pan_delta.x) * basis_x * props.pan_speed;
   const auto delta_pan_y = float(control.pan_delta.y) * pan_y * props.pan_speed;
 
   control.look_at += delta_pan_x * (props.pan_invert_x ? -1.0f : 1.0f);
@@ -109,13 +111,13 @@ inline void updateCamera(
   control.dolly += float(control.wheel_delta) * props.dolly_speed;
 
   if ((control.motion & MotionType::PushOut) == MotionType::PushOut) {
-      control.dolly -= props.translate_speed * dt;
-      control.look_at = camera.transform().translation - basis_z * control.dolly;
+    control.dolly -= props.translate_speed * dt;
+    control.look_at = camera.transform().translation - basis_z * control.dolly;
   }
 
   if ((control.motion & MotionType::PullIn) == MotionType::PullIn) {
-      control.dolly = as::min(control.dolly + props.translate_speed * dt, 0.0f);
-      control.look_at = camera.transform().translation - basis_z * control.dolly;
+    control.dolly = as::min(control.dolly + props.translate_speed * dt, 0.0f);
+    control.look_at = camera.transform().translation - basis_z * control.dolly;
   }
 
   if ((control.motion & MotionType::ScrollReset) == MotionType::ScrollReset) {
@@ -148,7 +150,7 @@ inline void updateCamera(
   }
 
   if ((control.motion & MotionType::Down) == MotionType::Down) {
-    if (control.dolly == 0.0f || props.orbit_speed == 0.0f) { 
+    if (control.dolly == 0.0f || props.orbit_speed == 0.0f) {
       control.look_at -= as::vec3::axis_y() * props.translate_speed * dt;
     } else {
       control.pitch -= props.orbit_speed * dt;
