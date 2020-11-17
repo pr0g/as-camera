@@ -122,6 +122,10 @@ inline void updateCamera(
     control.dolly = as::min(control.dolly + float(control.dolly_delta.y) * props.pan_speed, 0.0f);
   }
 
+  if (control.mode == Mode::Look) {
+    control.look_at += float(control.wheel_delta) * props.dolly_speed * forward * movement(handedness);
+  }
+
   if ((control.motion & MotionType::PushOut) == MotionType::PushOut) {
     control.dolly -= props.translate_speed * dt;
     control.look_at = camera.transform().translation - basis_z * control.dolly;
