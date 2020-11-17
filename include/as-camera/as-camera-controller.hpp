@@ -69,7 +69,7 @@ struct CameraProperties
   float pan_speed;
   float look_smoothness;
   float dolly_speed;
-  bool pan_local = false;
+  bool pan_local = true;
   bool pan_invert_x = true;
   bool pan_invert_y = true;
 };
