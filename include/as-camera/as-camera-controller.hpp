@@ -68,6 +68,7 @@ struct CameraProperties
   float orbit_speed;
   float pan_speed;
   float look_smoothness;
+  float move_smoothness;
   float dolly_speed;
   bool pan_local = true;
   bool pan_invert_x = true;
@@ -199,12 +200,14 @@ inline void updateCamera(
   control.pitch = as::clamp(control.pitch, -as::k_pi * 0.5f, as::k_pi * 0.5f);
 
   // https://www.gamasutra.com/blogs/ScottLembcke/20180404/316046/Improved_Lerp_Smoothing.php
-  const float rate = exp2(props.look_smoothness);
-  const float t = exp2(-rate * dt);
-  camera.pitch = as::mix(control.pitch, camera.pitch, t);
-  camera.yaw = as::mix(control.yaw, camera.yaw, t);
-  camera.focal_dist = as::mix(control.dolly, camera.focal_dist, t);
-  camera.look_at = as::vec_mix(control.look_at, camera.look_at, t);
+  const float look_rate = exp2(props.look_smoothness);
+  const float look_t = exp2(-look_rate * dt);
+  camera.pitch = as::mix(control.pitch, camera.pitch, look_t);
+  camera.yaw = as::mix(control.yaw, camera.yaw, look_t);
+  const float move_rate = exp2(props.move_smoothness);
+  const float move_t = exp2(-move_rate * dt);
+  camera.focal_dist = as::mix(control.dolly, camera.focal_dist, move_t);
+  camera.look_at = as::vec_mix(control.look_at, camera.look_at, move_t);
 }
 
 } // namespace asc
