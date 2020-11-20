@@ -75,6 +75,18 @@ struct CameraProperties
   bool pan_invert_y = true;
 };
 
+class CameraInput
+{
+public:
+  virtual ~CameraInput() = default;
+  
+  virtual void stepCamera() = 0;
+  virtual Camera nextCamera() const = 0;
+  // virtual float pitchDelta() const = 0;
+  // virtual float yawDelta() const = 0;
+  // virtual as::vec3 lookAtDelta() const = 0;
+};
+
 inline void updateCamera(
   Camera& camera, CameraControl& control, const CameraProperties& props,
   const float dt, const Handedness handedness)
