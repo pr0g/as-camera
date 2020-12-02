@@ -94,7 +94,7 @@ inline void updateCamera(
     }
   };
 
-  const bool orbit = !as::almost_equal(camera.focal_dist, 0.0f, 0.01f);
+  const bool orbit = !as::almost_equal(camera.look_dist, 0.0f, 0.01f);
 
   const auto flatten = [&camera, orbit](const auto& vector) {
     return orbit ? as::vec_normalize(as::vec3(vector.x, 0.0f, vector.z))
@@ -206,7 +206,7 @@ inline void updateCamera(
   camera.yaw = as::mix(control.yaw, camera.yaw, look_t);
   const float move_rate = exp2(props.move_smoothness);
   const float move_t = exp2(-move_rate * dt);
-  camera.focal_dist = as::mix(control.dolly, camera.focal_dist, move_t);
+  camera.look_dist = as::mix(control.dolly, camera.look_dist, move_t);
   camera.look_at = as::vec_mix(control.look_at, camera.look_at, move_t);
 }
 
