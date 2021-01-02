@@ -9,16 +9,16 @@ FetchContent_Declare(
     GIT_TAG        origin/main)
 FetchContent_MakeAvailable(as)
 
+FetchContent_Declare(
+    cmake-helpers
+    GIT_REPOSITORY https://github.com/pr0g/cmake-helpers.git
+    GIT_TAG        origin/main)
+FetchContent_MakeAvailable(cmake-helpers)
+list(APPEND CMAKE_MODULE_PATH ${cmake-helpers_SOURCE_DIR})
+
+include(simple-install)
+
 add_library(${PROJECT_NAME} INTERFACE)
-
-include(GNUInstallDirs)
-include(simple-install.cmake)
-
-target_include_directories(
-    ${PROJECT_NAME} INTERFACE
-    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>)
-
 target_link_libraries(${PROJECT_NAME} INTERFACE as)
 
-install_header_only(${PROJECT_NAME})
+include_and_install_header_only(${PROJECT_NAME})
