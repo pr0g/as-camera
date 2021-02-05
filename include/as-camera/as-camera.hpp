@@ -14,11 +14,11 @@ struct Camera
                            // than zero
   as::real yaw{0.0_r};
   as::real pitch{0.0_r};
-  as::real look_dist{0.0_r}; // zero gives fps free look,
+  as::real look_dist{0.0_r}; // zero gives first person free look,
                              // otherwise orbit about look_at
 
-  as::affine view() const; // camera view to pass to shader
-  as::affine transform() const; // camera transform to use in app
+  as::affine view() const; // view camera transform (v in MVP)
+  as::affine transform() const; // world camera transform
 };
 
 inline as::affine Camera::view() const
