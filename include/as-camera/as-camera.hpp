@@ -33,8 +33,12 @@ struct Camera
   as::mat3 rotation() const;
   // world translation
   as::vec3 translation() const;
-  // world camera transform
+  // world transform
   as::affine transform() const;
+
+private:
+  // world camera transform with handedness
+  as::affine internal_transform() const;
 };
 
 inline as::real handedness_sign()
@@ -45,10 +49,10 @@ inline as::real handedness_sign()
 
 inline as::affine Camera::view() const
 {
-  return as::affine_inverse(transform());
+  return as::affine_inverse(internal_transform());
 }
 
-inline as::affine Camera::transform() const
+inline as::affine Camera::internal_transform() const
 {
   const as::real sign = handedness_sign();
   return as::affine_mul(
@@ -64,12 +68,17 @@ inline as::mat3 Camera::rotation() const
   const auto reflection = as::mat3(1.0_r, 0.0_r, 0.0_r,
                                    0.0_r, 1.0_r, 0.0_r,
                                    0.0_r, 0.0_r, 1.0_r * sign);
-  return as::mat_mul(reflection, transform().rotation);
+  return as::mat_mul(reflection, internal_transform().rotation);
 }
 
 inline as::vec3 Camera::translation() const
 {
-  return transform().translation;
+  return internal_transform().translation;
+}
+
+inline as::affine Camera::transform() const
+{
+  return as::affine(rotation(), translation());
 }
 
 } // namespace asc
