@@ -13,6 +13,10 @@ enum class Handedness : int32_t
   Right = 1
 };
 
+// note: This function is not implemented - it must be provided by the
+// consuming application.
+Handedness handedness();
+
 struct Camera
 {
   as::vec3 look_at{0.0_r}; // position of camera when look_dist is zero,
@@ -24,29 +28,29 @@ struct Camera
                              // otherwise orbit about look_at
 
   // view camera transform (v in MVP)
-  as::affine view(const Handedness handedness) const;
+  as::affine view() const;
   // world rotation
-  as::mat3 rotation(const Handedness handedness) const;
+  as::mat3 rotation() const;
   // world translation
-  as::vec3 translation(const Handedness handedness) const;
+  as::vec3 translation() const;
   // world camera transform
-  as::affine transform(const Handedness handedness) const;
+  as::affine transform() const;
 };
 
-inline as::real handedness_sign(const Handedness handedness)
+inline as::real handedness_sign()
 {
   const as::real signs[] = {1.0_r, -1.0_r};
-  return signs[static_cast<int32_t>(handedness)];
+  return signs[static_cast<int32_t>(handedness())];
 }
 
-inline as::affine Camera::view(const Handedness handedness) const
+inline as::affine Camera::view() const
 {
-  return as::affine_inverse(transform(handedness));
+  return as::affine_inverse(transform());
 }
 
-inline as::affine Camera::transform(const Handedness handedness) const
+inline as::affine Camera::transform() const
 {
-  const as::real sign = handedness_sign(handedness);
+  const as::real sign = handedness_sign();
   return as::affine_mul(
     as::affine_mul(
       as::affine(as::vec3::axis_z(look_dist * sign)),
@@ -54,18 +58,18 @@ inline as::affine Camera::transform(const Handedness handedness) const
     as::affine(look_at));
 }
 
-inline as::mat3 Camera::rotation(const Handedness handedness) const
+inline as::mat3 Camera::rotation() const
 {
-  const as::real sign = handedness_sign(handedness);
+  const as::real sign = handedness_sign();
   const auto reflection = as::mat3(1.0_r, 0.0_r, 0.0_r,
                                    0.0_r, 1.0_r, 0.0_r,
                                    0.0_r, 0.0_r, 1.0_r * sign);
-  return as::mat_mul(reflection, transform(handedness).rotation);
+  return as::mat_mul(reflection, transform().rotation);
 }
 
-inline as::vec3 Camera::translation(const Handedness handedness) const
+inline as::vec3 Camera::translation() const
 {
-  return transform(handedness).translation;
+  return transform().translation;
 }
 
 } // namespace asc
