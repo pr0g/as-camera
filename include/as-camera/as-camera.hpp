@@ -29,16 +29,15 @@ struct Camera
 
   // view camera transform (v in MVP)
   as::affine view() const;
+  // world camera transform
+  // note: will include handedness - lh +z, rh -z
+  as::affine transform() const;
   // world rotation
+  // note: in rh coordinate system rotation() will include reflection,
+  // z will always point into the screen
   as::mat3 rotation() const;
   // world translation
   as::vec3 translation() const;
-  // world transform
-  as::affine transform() const;
-
-private:
-  // world camera transform with handedness
-  as::affine internal_transform() const;
 };
 
 inline as::real handedness_sign()
@@ -49,10 +48,10 @@ inline as::real handedness_sign()
 
 inline as::affine Camera::view() const
 {
-  return as::affine_inverse(internal_transform());
+  return as::affine_inverse(transform());
 }
 
-inline as::affine Camera::internal_transform() const
+inline as::affine Camera::transform() const
 {
   const as::real sign = handedness_sign();
   return as::affine_mul(
@@ -68,17 +67,12 @@ inline as::mat3 Camera::rotation() const
   const auto reflection = as::mat3(1.0_r, 0.0_r, 0.0_r,
                                    0.0_r, 1.0_r, 0.0_r,
                                    0.0_r, 0.0_r, 1.0_r * sign);
-  return as::mat_mul(reflection, internal_transform().rotation);
+  return as::mat_mul(reflection, transform().rotation);
 }
 
 inline as::vec3 Camera::translation() const
 {
-  return internal_transform().translation;
-}
-
-inline as::affine Camera::transform() const
-{
-  return as::affine(rotation(), translation());
+  return transform().translation;
 }
 
 } // namespace asc
