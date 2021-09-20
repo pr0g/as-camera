@@ -9,7 +9,7 @@ using as::operator""_r;
 
 enum class Handedness : int32_t
 {
-  Left  = 0,
+  Left = 0,
   Right = 1
 };
 
@@ -24,8 +24,15 @@ struct Camera
                            // than zero
   as::real yaw{0.0_r};
   as::real pitch{0.0_r};
-  as::real look_dist{0.0_r}; // zero gives first person free look,
-                             // otherwise orbit about look_at
+  as::vec3 pivot{0.0_r};
+
+  void set_pivot(const as::vec3& p)
+  {
+    auto delta = as::affine_inv_transform_pos(transform(), p)
+               - as::affine_inv_transform_pos(transform(), pivot);
+    look_at -= delta;
+    pivot = p;
+  }
 
   // view camera transform (v in MVP)
   as::affine view() const;
@@ -56,17 +63,19 @@ inline as::affine Camera::transform() const
   const as::real sign = handedness_sign();
   return as::affine_mul(
     as::affine_mul(
-      as::affine(as::vec3::axis_z(look_dist * sign)),
-      as::affine(as::mat3_rotation_zxy(pitch * sign, yaw * sign, 0.0_r))),
-    as::affine(look_at));
+      as::affine_from_vec3(look_at), as::affine_from_mat3(as::mat3_rotation_zxy(
+                                       pitch * sign, yaw * sign, 0.0f))),
+    as::affine_from_vec3(pivot));
 }
 
 inline as::mat3 Camera::rotation() const
 {
   const as::real sign = handedness_sign();
+  // clang-format off
   const auto reflection = as::mat3(1.0_r, 0.0_r, 0.0_r,
                                    0.0_r, 1.0_r, 0.0_r,
                                    0.0_r, 0.0_r, 1.0_r * sign);
+  // clang-format on
   return as::mat_mul(reflection, transform().rotation);
 }
 
