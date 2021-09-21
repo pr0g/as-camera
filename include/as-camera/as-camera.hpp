@@ -19,18 +19,16 @@ Handedness handedness();
 
 struct Camera
 {
-  as::vec3 look_at{0.0_r}; // position of camera when look_dist is zero,
-                           // or position of look_at when look_dist is greater
-                           // than zero
+  as::vec3 pivot{0.0_r}; // pivot point to rotate about
+  as::vec3 offset{0.0_r}; // offset relative to pivot
   as::real yaw{0.0_r};
   as::real pitch{0.0_r};
-  as::vec3 pivot{0.0_r};
 
   void set_pivot(const as::vec3& p)
   {
     auto delta = as::affine_inv_transform_pos(transform(), p)
                - as::affine_inv_transform_pos(transform(), pivot);
-    look_at -= delta;
+    offset -= delta;
     pivot = p;
   }
 
@@ -63,7 +61,7 @@ inline as::affine Camera::transform() const
   const as::real sign = handedness_sign();
   return as::affine_mul(
     as::affine_mul(
-      as::affine_from_vec3(look_at), as::affine_from_mat3(as::mat3_rotation_zxy(
+      as::affine_from_vec3(offset), as::affine_from_mat3(as::mat3_rotation_zxy(
                                        pitch * sign, yaw * sign, 0.0f))),
     as::affine_from_vec3(pivot));
 }
