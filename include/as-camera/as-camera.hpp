@@ -78,9 +78,9 @@ inline as::vec3 Camera::translation() const
 // position
 inline void move_pivot_detached(Camera& camera, const as::vec3& pivot)
 {
-  const auto transform = camera.transform();
-  const auto delta = as::affine_inv_transform_pos(transform, pivot)
-                   - as::affine_inv_transform_pos(transform, camera.pivot);
+  const auto view = camera.view();
+  const auto delta = as::affine_transform_pos(view, pivot)
+                   - as::affine_transform_pos(view, camera.pivot);
   camera.offset -= delta;
   camera.pivot = pivot;
 }
