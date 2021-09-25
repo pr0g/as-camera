@@ -19,18 +19,10 @@ Handedness handedness();
 
 struct Camera
 {
-  as::vec3 pivot{0.0_r}; // pivot point to rotate about
-  as::vec3 offset{0.0_r}; // offset relative to pivot
-  as::real yaw{0.0_r};
-  as::real pitch{0.0_r};
-
-  void set_pivot(const as::vec3& p)
-  {
-    auto delta = as::affine_inv_transform_pos(transform(), p)
-               - as::affine_inv_transform_pos(transform(), pivot);
-    offset -= delta;
-    pivot = p;
-  }
+  as::vec3 pivot = as::vec3::zero(); // pivot point to rotate about
+  as::vec3 offset = as::vec3::zero(); // offset relative to pivot
+  as::real yaw = 0.0_r; // yaw rotation in radians
+  as::real pitch = 0.0_r; // pitch rotation in radians
 
   // view camera transform (v in MVP)
   as::affine view() const;
@@ -62,7 +54,7 @@ inline as::affine Camera::transform() const
   return as::affine_mul(
     as::affine_mul(
       as::affine_from_vec3(offset), as::affine_from_mat3(as::mat3_rotation_zxy(
-                                       pitch * sign, yaw * sign, 0.0f))),
+                                      pitch * sign, yaw * sign, 0.0f))),
     as::affine_from_vec3(pivot));
 }
 
@@ -80,6 +72,17 @@ inline as::mat3 Camera::rotation() const
 inline as::vec3 Camera::translation() const
 {
   return transform().translation;
+}
+
+// helper to allow the pivot to be positioned without altering the camera's
+// position
+inline void move_pivot_detached(Camera& camera, const as::vec3& pivot)
+{
+  const auto transform = camera.transform();
+  const auto delta = as::affine_inv_transform_pos(transform, pivot)
+                   - as::affine_inv_transform_pos(transform, camera.pivot);
+  camera.offset -= delta;
+  camera.pivot = pivot;
 }
 
 } // namespace asc
