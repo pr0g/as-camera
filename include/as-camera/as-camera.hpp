@@ -54,7 +54,7 @@ inline as::affine Camera::transform() const
   return as::affine_mul(
     as::affine_mul(
       as::affine_from_vec3(offset), as::affine_from_mat3(as::mat3_rotation_zxy(
-                                      pitch * sign, yaw * sign, 0.0f))),
+                                      pitch * sign, yaw * sign, 0.0_r))),
     as::affine_from_vec3(pivot));
 }
 
