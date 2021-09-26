@@ -5,8 +5,6 @@
 namespace asc
 {
 
-using as::operator""_r;
-
 enum class Handedness : int32_t
 {
   Left = 0,
@@ -21,8 +19,8 @@ struct Camera
 {
   as::vec3 pivot = as::vec3::zero(); // pivot point to rotate about
   as::vec3 offset = as::vec3::zero(); // offset relative to pivot
-  as::real yaw = 0.0_r; // yaw rotation in radians
-  as::real pitch = 0.0_r; // pitch rotation in radians
+  as::real yaw = as::operator""_r(0.0); // yaw rotation in radians
+  as::real pitch = as::operator""_r(0.0); // pitch rotation in radians
 
   // view camera transform (v in MVP)
   as::affine view() const;
@@ -39,6 +37,7 @@ struct Camera
 
 inline as::real handedness_sign()
 {
+  using as::operator""_r;
   const as::real signs[] = {1.0_r, -1.0_r};
   return signs[static_cast<int32_t>(handedness())];
 }
@@ -50,6 +49,7 @@ inline as::affine Camera::view() const
 
 inline as::affine Camera::transform() const
 {
+  using as::operator""_r;
   const as::real sign = handedness_sign();
   return as::affine_mul(
     as::affine_mul(
@@ -60,6 +60,7 @@ inline as::affine Camera::transform() const
 
 inline as::mat3 Camera::rotation() const
 {
+  using as::operator""_r;
   const as::real sign = handedness_sign();
   // clang-format off
   const auto reflection = as::mat3(1.0_r, 0.0_r, 0.0_r,
