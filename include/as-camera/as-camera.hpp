@@ -21,6 +21,7 @@ struct Camera
   as::vec3 offset = as::vec3::zero(); // offset relative to pivot
   as::real yaw = as::operator""_r(0.0); // yaw rotation in radians
   as::real pitch = as::operator""_r(0.0); // pitch rotation in radians
+  as::real roll = as::operator""_r(0.0); // roll rotation in radians
 
   // view camera transform (v in MVP)
   as::affine view() const;
@@ -54,7 +55,7 @@ inline as::affine Camera::transform() const
   return as::affine_mul(
     as::affine_mul(
       as::affine_from_vec3(offset), as::affine_from_mat3(as::mat3_rotation_zxy(
-                                      pitch * sign, yaw * sign, 0.0_r))),
+                                      pitch * sign, yaw * sign, roll * sign))),
     as::affine_from_vec3(pivot));
 }
 
